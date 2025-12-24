@@ -13,9 +13,9 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       youtubeId: '2N1Nh7M8kpY',
       instructions: [
         'Sit or stand with good posture, shoulders relaxed',
-        'Slowly tilt your head to the right, bringing ear toward shoulder',
-        'Hold for 15-30 seconds, feeling the stretch on the left side',
-        'Return to center and repeat on the left side',
+        'Slowly tilt your head to the left, bringing ear toward shoulder',
+        'Hold for 5 seconds, feeling the stretch on the right side',
+        'Return to center and repeat on the right side',
         'Perform 3 repetitions on each side'
       ],
       benefits: [
@@ -34,9 +34,8 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       youtubeId: 'wQylqaCl8Zo',
       instructions: [
         'Start in a neutral position looking straight ahead',
-        'Slowly turn your head to the right as far as comfortable',
-        'Hold for 5 seconds',
-        'Return to center and repeat to the left',
+        'Slowly turn your head to either right or left according to selected position',
+        'Return to center and repeat on the opposite side',
         'Do 10 repetitions on each side'
       ],
       benefits: [
@@ -82,7 +81,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
         'Stand or sit with good posture',
         'Bring your left arm across your body',
         'Use your right hand to gently pull the left arm closer',
-        'Hold for 20-30 seconds',
+        'Do for at least 15 Reps',
         'Repeat 3 times on each side'
       ],
       benefits: [
