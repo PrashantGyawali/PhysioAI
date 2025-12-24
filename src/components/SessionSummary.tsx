@@ -165,14 +165,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({
 
                 {/* Stats */}
                 <div className="p-6">
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="text-center p-4 bg-secondary rounded-xl">
-                            <Dumbbell className="w-6 h-6 text-primary mx-auto mb-2" />
-                            <p className="text-2xl font-bold text-foreground">{sessionData.reps}</p>
-                            <p className="text-xs text-muted-foreground">
-                                {sessionData.exerciseType === 'DURATION' ? 'Hold Time (s)' : 'Reps'}
-                            </p>
-                        </div>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                         <div className="text-center p-4 bg-secondary rounded-xl">
                             <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
                             <p className="text-2xl font-bold text-foreground">{formatTime(sessionData.duration)}</p>
