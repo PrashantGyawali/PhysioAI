@@ -125,8 +125,13 @@ const Index = () => {
                       Start Assessment
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Button>
-                    <Button variant="glass" size="xl">
-                      Watch Demo
+                    <Button
+                      variant="glass"
+                      size="xl"
+                      onClick={() => navigate('/all-exercises')}
+                    >
+                      <Dumbbell className="w-5 h-5 mr-2" />
+                      All Exercises
                     </Button>
                   </div>
 

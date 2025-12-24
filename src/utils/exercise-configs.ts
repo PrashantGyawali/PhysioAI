@@ -159,6 +159,67 @@ export const EXERCISE_CONFIGS: Record<string, ExerciseConfig> = {
         targetReps: 10
     },
 
+    // --- Shoulder Pendulum ---
+    'shoulder-pendulum': {
+        id: 'shoulder-pendulum',
+        type: 'REPS',
+        instruction: 'Lean forward, let arm hang. Swing in small circles.',
+        requiredLandmarks: [11, 13, 15], // Shoulder, Elbow, Wrist
+        connections: [
+            { start: 11, end: 13 },  // Shoulder to Elbow
+            { start: 13, end: 15 },  // Elbow to Wrist
+        ],
+        calculateMetric: (landmarks) => {
+            // Track wrist horizontal position relative to shoulder
+            // Pendulum swing = wrist moves left/right while hanging down
+            const shoulderX = landmarks[11].x;
+            const wristX = landmarks[15].x;
+
+            // Calculate horizontal offset (positive = right, negative = left)
+            const offset = (wristX - shoulderX) * 100;
+            return offset;
+        },
+        thresholds: {
+            start: 5,    // Swing right
+            end: -5,     // Swing left
+        },
+        targetReps: 10
+    },
+
+    // --- Cross-Body Shoulder Stretch ---
+    'shoulder-stretch': {
+        id: 'shoulder-stretch',
+        type: 'REPS',
+        instruction: 'Bring arm across body. Pull gently with other hand. Repeat each side.',
+        requiredLandmarks: [11, 12, 15], // Both Shoulders and Left Wrist
+        connections: [
+            { start: 11, end: 12 },  // Shoulder line
+            { start: 11, end: 13 },  // Left Shoulder to Elbow
+            { start: 13, end: 15 },  // Left Elbow to Wrist
+        ],
+        calculateMetric: (landmarks) => {
+            // Detect cross-body: left wrist should cross past right shoulder
+            // Calculate how far left wrist is past the midline (toward right shoulder)
+            const leftShoulderX = landmarks[11].x;
+            const rightShoulderX = landmarks[12].x;
+            const leftWristX = landmarks[15].x;
+
+            const shoulderWidth = Math.abs(rightShoulderX - leftShoulderX);
+            if (shoulderWidth < 0.01) return 0;
+
+            // How far past center the wrist is (positive = crossed to right side)
+            const midX = (leftShoulderX + rightShoulderX) / 2;
+            const crossAmount = (leftWristX - midX) / shoulderWidth * 100;
+
+            return crossAmount;
+        },
+        thresholds: {
+            start: 30,   // Arm crossed far to the right
+            end: -20,    // Arm back to starting position (near left side)
+        },
+        targetReps: 3
+    },
+
     // --- Manual catch-all for undefined exercises ---
     'default': {
         id: 'default',
