@@ -19,6 +19,7 @@ interface FeedbackItem {
 export const MotionDetector: React.FC<MotionDetectorProps> = ({ exercise, onClose }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const femaleVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -26,7 +27,33 @@ export const MotionDetector: React.FC<MotionDetectorProps> = ({ exercise, onClos
   const [score, setScore] = useState(0);
   const [reps, setReps] = useState(0);
 
+  // Preload female voice for TTS
   useEffect(() => {
+    const loadVoices = () => {
+      const voices = speechSynthesis?.getVoices() || [];
+      const femaleVoice = voices.find(voice =>
+        voice.name.toLowerCase().includes('female') ||
+        voice.name.toLowerCase().includes('zira') ||
+        voice.name.toLowerCase().includes('samantha') ||
+        voice.name.toLowerCase().includes('victoria') ||
+        voice.name.toLowerCase().includes('karen') ||
+        voice.name.toLowerCase().includes('moira') ||
+        voice.name.toLowerCase().includes('tessa') ||
+        voice.name.toLowerCase().includes('fiona') ||
+        voice.name.includes('Google UK English Female') ||
+        voice.name.includes('Google US English')
+      );
+      if (femaleVoice) {
+        femaleVoiceRef.current = femaleVoice;
+      }
+    };
+
+    // Load voices immediately and also on voiceschanged event
+    loadVoices();
+    if (typeof speechSynthesis !== 'undefined') {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
     return () => {
       stopCamera();
     };
@@ -72,6 +99,13 @@ export const MotionDetector: React.FC<MotionDetectorProps> = ({ exercise, onClos
     if (!isMuted) {
       const utterance = new SpeechSynthesisUtterance(message);
       utterance.rate = 1.0;
+      utterance.pitch = 1.1;
+
+      // Use preloaded female voice
+      if (femaleVoiceRef.current) {
+        utterance.voice = femaleVoiceRef.current;
+      }
+
       speechSynthesis.speak(utterance);
     }
   };

@@ -6,7 +6,7 @@ import { ExerciseCard, Exercise } from '@/components/ExerciseCard';
 import { ExercisePlayer } from '@/components/ExercisePlayer';
 import { MotionDetector } from '@/components/MotionDetector';
 import { getExercisesForBodyPart } from '@/data/exercises';
-import { Activity, MessageCircle, Dumbbell, Calendar, ArrowRight, Sparkles, Heart, Shield } from 'lucide-react';
+import { Activity, MessageCircle, Dumbbell, Calendar, ArrowRight, Sparkles, Heart, Shield, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type AppStep = 'landing' | 'select-body' | 'chatbot' | 'exercises' | 'player' | 'motion';
@@ -143,6 +143,15 @@ const Index = () => {
                     </Button>
                     <Button variant="glass" size="xl">
                       Watch Demo
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="xl"
+                      onClick={() => navigate('/dashboard')}
+                      className="border-primary/30 hover:bg-primary/10"
+                    >
+                      <TrendingUp className="w-5 h-5 mr-2" />
+                      View Progress
                     </Button>
                   </div>
 

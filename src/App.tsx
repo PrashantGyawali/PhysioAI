@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AllExercises from "./pages/AllExercises";
+import Dashboard from "./pages/Dashboard";
 import BicepCurlCounter from "./components/BicepCurlCounter";
 import UniversalExerciseCounter from "./components/UniversalExerciseCounter";
 import NotFound from "./pages/NotFound";
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/all-exercises" element={<AllExercises />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bicep-curls" element={<BicepCurlCounter />} />
           <Route path="/exercise/:id" element={<UniversalExerciseCounter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

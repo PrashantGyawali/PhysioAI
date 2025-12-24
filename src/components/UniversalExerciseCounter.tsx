@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PoseLandmarker, FilesetResolver, DrawingUtils, NormalizedLandmark } from '@mediapipe/tasks-vision';
 import { Button } from '@/components/ui/button';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, CheckCircle2, Square, StopCircle } from 'lucide-react';
 import { getExerciseConfig, ExerciseType } from '../utils/exercise-configs';
 import { getExercisesForBodyPart, exerciseDatabase } from '../data/exercises';
+import { saveSession, Achievement } from '../utils/progressStore';
+import SessionSummary from './SessionSummary';
 
 // Find exercise details by ID
 const findExerciseById = (id: string) => {
@@ -31,6 +33,70 @@ const UniversalExerciseCounter: React.FC = () => {
     const [activeSide, setActiveSide] = useState<'left' | 'right'>('left'); // Default to left
     const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
 
+    // Session tracking state  
+    const [showSummary, setShowSummary] = useState(false);
+    const [sessionStartTime] = useState(Date.now());
+    const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
+    const [formScores, setFormScores] = useState<number[]>([]);
+    const [sessionData, setSessionData] = useState<{
+        exerciseName: string;
+        reps: number;
+        duration: number;
+        formScore: number;
+        targetArea: string;
+    } | null>(null);
+
+    // Handle ending the exercise
+    const handleEndExercise = () => {
+        // Stop the animation frame
+        if (requestRef.current) {
+            cancelAnimationFrame(requestRef.current);
+            requestRef.current = null;
+        }
+
+        // Stop the video stream
+        if (videoRef.current && videoRef.current.srcObject) {
+            const stream = videoRef.current.srcObject as MediaStream;
+            stream.getTracks().forEach(track => track.stop());
+        }
+
+        // Calculate session data
+        const duration = Math.round((Date.now() - sessionStartTime) / 1000);
+        const reps = statsRef.current.count;
+        const timer = statsRef.current.timer;
+
+        // Calculate form score (based on successful tracking vs total time)
+        // For now, we'll use a simple formula based on activity
+        const formScore = Math.min(100, Math.round(
+            config.type === 'REPS'
+                ? Math.min(100, reps * 20 + 40)  // More reps = better score
+                : Math.min(100, (timer / Math.max(1, duration)) * 100 + 20) // More hold time ratio = better
+        ));
+
+        const data = {
+            exerciseName: exerciseDetails?.name || 'Unknown Exercise',
+            reps: config.type === 'REPS' ? reps : timer, // Use timer as "reps" for duration exercises
+            duration,
+            formScore,
+            targetArea: exerciseDetails?.targetArea || 'general',
+        };
+
+        setSessionData(data);
+
+        // Save the session and get achievements
+        const achievements = saveSession({
+            exerciseId: id || 'unknown',
+            exerciseName: data.exerciseName,
+            reps: data.reps,
+            duration: data.duration,
+            formScore: data.formScore,
+            targetArea: data.targetArea,
+        });
+
+        setNewAchievements(achievements);
+        setShowSummary(true);
+    };
+
     // Refs for Loop
     const statsRef = useRef({ count: 0, timer: 0 });
     const stageRef = useRef<'START' | 'END' | 'HOLD' | null>(null);
@@ -42,6 +108,7 @@ const UniversalExerciseCounter: React.FC = () => {
     const autoSwitchScheduledRef = useRef(false);
     const lastSpokenRef = useRef<string | null>(null);
     const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const femaleVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
     useEffect(() => {
         activeSideRef.current = activeSide;
@@ -64,6 +131,34 @@ const UniversalExerciseCounter: React.FC = () => {
     // For simplicity, we assume the config handles landmarks relative to body, OR we offset them.
     // Let's implement simple index swapping for Side Support.
     const config = getExerciseConfig(id || 'default');
+
+    // Preload female voice for TTS
+    useEffect(() => {
+        const loadVoices = () => {
+            const voices = window.speechSynthesis?.getVoices() || [];
+            const femaleVoice = voices.find(voice =>
+                voice.name.toLowerCase().includes('female') ||
+                voice.name.toLowerCase().includes('zira') ||
+                voice.name.toLowerCase().includes('samantha') ||
+                voice.name.toLowerCase().includes('victoria') ||
+                voice.name.toLowerCase().includes('karen') ||
+                voice.name.toLowerCase().includes('moira') ||
+                voice.name.toLowerCase().includes('tessa') ||
+                voice.name.toLowerCase().includes('fiona') ||
+                voice.name.includes('Google UK English Female') ||
+                voice.name.includes('Google US English')
+            );
+            if (femaleVoice) {
+                femaleVoiceRef.current = femaleVoice;
+            }
+        };
+
+        // Load voices immediately and also on voiceschanged event
+        loadVoices();
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+    }, []);
 
     useEffect(() => {
         const initMediaPipe = async () => {
@@ -302,8 +397,13 @@ const UniversalExerciseCounter: React.FC = () => {
 
                         const utterance = new SpeechSynthesisUtterance(currentFeedback);
                         utterance.rate = 1.0;
-                        utterance.pitch = 1.0;
+                        utterance.pitch = 1.1;
                         utterance.volume = 1.0;
+
+                        // Use preloaded female voice
+                        if (femaleVoiceRef.current) {
+                            utterance.voice = femaleVoiceRef.current;
+                        }
 
                         window.speechSynthesis.speak(utterance);
                         lastSpokenRef.current = currentFeedback;
@@ -355,7 +455,13 @@ const UniversalExerciseCounter: React.FC = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="w-[100px]"></div>
+                <Button
+                    variant="ghost"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    onClick={handleEndExercise}
+                >
+                    <StopCircle className="mr-2 h-4 w-4" /> End Exercise
+                </Button>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl" style={{ maxHeight: 'calc(100vh - 100px)' }}>
@@ -448,6 +554,19 @@ const UniversalExerciseCounter: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Session Summary Modal */}
+            {sessionData && (
+                <SessionSummary
+                    isOpen={showSummary}
+                    onClose={() => {
+                        setShowSummary(false);
+                        navigate('/');
+                    }}
+                    sessionData={sessionData}
+                    newAchievements={newAchievements}
+                />
+            )}
         </div>
     );
 };
