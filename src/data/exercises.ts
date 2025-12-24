@@ -205,23 +205,69 @@ export const getExercisesForBodyPart = (bodyPartId: string): Exercise[] => {
     return exerciseDatabase[bodyPartId];
   }
 
-  // Try partial matches
+  // Try partial matches - maps body part titles from body-parts.ts to exercise categories
   const partialMatches: Record<string, string> = {
+    // Head/Neck related
     'head': 'neck',
+    'maxillofacial': 'neck',
+    'skul_brain': 'neck',
     'back_head': 'neck',
     'back_neck': 'neck',
-    'left_back_shoulder': 'left_shoulder',
-    'right_back_shoulder': 'right_shoulder',
-    'abdominal': 'spine',
-    'groin': 'buttocks',
+
+    // Shoulder related
+    'left_shoulder_back': 'left_shoulder',
+    'right_shoulder_back': 'right_shoulder',
+    'left_humerus': 'left_shoulder',
+    'right_humerus': 'right_shoulder',
+    'left_arm': 'left_shoulder',
+    'right_arm': 'right_shoulder',
+
+    // Elbow/Forearm/Wrist/Hand - map to shoulder for now
+    'left_elbow': 'left_shoulder',
+    'right_elbow': 'right_shoulder',
+    'left_forearm': 'left_shoulder',
+    'right_forearm': 'right_shoulder',
+    'left_wrist': 'left_shoulder',
+    'right_wrist': 'right_shoulder',
+    'left_hand': 'left_shoulder',
+    'right_hand': 'right_shoulder',
+
+    // Torso
+    'abdominal': 'default',
+    'chest': 'default',
+    'pelvis': 'default',
+    'spine': 'default',
+    'back': 'neck',
+
+    // Hip/Buttocks
+    'left_hip': 'left_knee',
+    'right_hip': 'right_knee',
+    'buttocks': 'default',
+    'groin': 'default',
+
+    // Thigh/Leg
+    'left_femur_thigh': 'left_knee',
+    'right_femur_thigh': 'right_knee',
     'left_thigh': 'left_knee',
     'right_thigh': 'right_knee',
+    'left_leg': 'left_knee',
+    'right_leg': 'right_knee',
     'left_hamstring': 'left_knee',
     'right_hamstring': 'right_knee',
+
+    // Lower leg
+    'left_fib_tib': 'left_knee',
+    'right_tib_fib': 'right_knee',
     'left_calf': 'left_knee',
     'right_calf': 'right_knee',
     'left_shin': 'left_knee',
     'right_shin': 'right_knee',
+
+    // Ankle/Foot
+    'left_ankle': 'left_knee',
+    'right_ankle': 'right_knee',
+    'left_foot': 'left_knee',
+    'right_foot': 'right_knee',
   };
 
   const mappedPart = partialMatches[bodyPartId];

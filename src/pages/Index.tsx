@@ -20,8 +20,8 @@ const Index = () => {
   const [recommendedExercises, setRecommendedExercises] = useState<Exercise[]>([]);
   const [currentExercise, setCurrentExercise] = useState<Exercise | null>(null);
 
-  const handleBodyPartSelect = (parts: { id: string; name: string }[]) => {
-    setSelectedBodyParts(parts.map(part=>part.id));
+  const handleBodyPartSelect = (parts: { id: string; title: string }[]) => {
+    setSelectedBodyParts(parts.map(part => part.title));
     setCurrentStep('chatbot');
   };
 
@@ -62,7 +62,7 @@ const Index = () => {
                 <Dumbbell className="w-4 h-4 mr-2" />
                 Select Area
               </Button>
-              {selectedBodyParts.length>0 && (
+              {selectedBodyParts.length > 0 && (
                 <Button
                   variant={currentStep === 'chatbot' ? 'default' : 'ghost'}
                   size="sm"
@@ -121,6 +121,14 @@ const Index = () => {
                     >
                       Start Assessment
                       <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="xl"
+                      onClick={() => navigate('/all-exercises')}
+                    >
+                      <Dumbbell className="w-5 h-5 mr-2" />
+                      View All Exercises
                     </Button>
                   </div>
 
@@ -226,7 +234,7 @@ const Index = () => {
         )}
 
         {/* Chatbot Assessment */}
-        {currentStep === 'chatbot' && selectedBodyParts.length>0 && (
+        {currentStep === 'chatbot' && selectedBodyParts.length > 0 && (
           <div className="container mx-auto px-4 py-12 max-w-2xl">
             <div className="text-center mb-8 animate-slide-up">
               <h1 className="font-display text-3xl font-bold text-foreground mb-2">

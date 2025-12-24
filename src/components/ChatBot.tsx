@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
-import { bodyParts } from '@/utils/body-parts';
 
 interface Message {
   id: string;
@@ -77,9 +76,10 @@ export const ChatBot: React.FC<ChatBotProps> = ({ selectedBodyParts, onAssessmen
 
   useEffect(() => {
     if (selectedBodyParts.length > 0) {
+      // selectedBodyParts now contains titles directly (e.g., 'neck', 'left_shoulder')
       const partName = selectedBodyParts
         .map(part =>
-          bodyParts.filter(bodypart=>bodypart.id==part)[0].title
+          part
             .replace(/_/g, ' ')
             .replace(/\b\w/g, l => l.toUpperCase())
         )
