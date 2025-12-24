@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { BodyMap } from '@/components/BodyMap';
+import { BodyMap } from '@/components/BodiMap';
 import { ChatBot, AssessmentData } from '@/components/ChatBot';
 import { ExerciseCard, Exercise } from '@/components/ExerciseCard';
 import { ExercisePlayer } from '@/components/ExercisePlayer';
@@ -124,9 +124,6 @@ const Index = () => {
                     >
                       Start Assessment
                       <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                    <Button variant="glass" size="xl">
-                      Watch Demo
                     </Button>
                   </div>
 

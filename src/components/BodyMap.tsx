@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { cn } from '@/lib/utils';
 
 interface BodyPart {
   id: string;
@@ -12,20 +11,20 @@ interface BodyPart {
 const bodyPartsData: BodyPart[] = [
   // Front body - Head
   { id: 'head', name: 'Head', path: 'M 100 30 C 80 30, 70 50, 70 70 C 70 90, 85 105, 100 105 C 115 105, 130 90, 130 70 C 130 50, 120 30, 100 30 Z', side: 'front' },
-  
+
   // Front body - Neck
   { id: 'neck', name: 'Neck', path: 'M 90 105 L 90 125 L 110 125 L 110 105 Z', side: 'front' },
-  
+
   // Front body - Shoulders
   { id: 'left_shoulder', name: 'Left Shoulder', path: 'M 110 125 Q 140 130, 145 145 L 130 150 Q 120 140, 110 140 Z', side: 'front' },
   { id: 'right_shoulder', name: 'Right Shoulder', path: 'M 90 125 Q 60 130, 55 145 L 70 150 Q 80 140, 90 140 Z', side: 'front' },
-  
+
   // Front body - Chest
   { id: 'chest', name: 'Chest', path: 'M 70 145 L 70 200 L 130 200 L 130 145 Q 110 140, 100 140 Q 90 140, 70 145 Z', side: 'front' },
-  
+
   // Front body - Abdominal
   { id: 'abdominal', name: 'Abdominal', path: 'M 70 200 L 70 260 L 130 260 L 130 200 Z', side: 'front' },
-  
+
   // Front body - Arms
   { id: 'left_upper_arm', name: 'Left Upper Arm', path: 'M 130 150 L 145 145 L 155 200 L 140 205 Z', side: 'front' },
   { id: 'right_upper_arm', name: 'Right Upper Arm', path: 'M 70 150 L 55 145 L 45 200 L 60 205 Z', side: 'front' },
@@ -35,10 +34,10 @@ const bodyPartsData: BodyPart[] = [
   { id: 'right_forearm', name: 'Right Forearm', path: 'M 55 235 L 40 230 L 35 290 L 50 295 Z', side: 'front' },
   { id: 'left_hand', name: 'Left Hand', path: 'M 150 295 L 165 290 L 170 330 L 155 335 L 145 320 Z', side: 'front' },
   { id: 'right_hand', name: 'Right Hand', path: 'M 50 295 L 35 290 L 30 330 L 45 335 L 55 320 Z', side: 'front' },
-  
+
   // Front body - Groin
   { id: 'groin', name: 'Hip/Groin', path: 'M 70 260 L 70 290 L 100 300 L 130 290 L 130 260 Z', side: 'front' },
-  
+
   // Front body - Legs
   { id: 'left_thigh', name: 'Left Thigh', path: 'M 100 300 L 130 290 L 135 380 L 105 385 Z', side: 'front' },
   { id: 'right_thigh', name: 'Right Thigh', path: 'M 100 300 L 70 290 L 65 380 L 95 385 Z', side: 'front' },
@@ -50,7 +49,7 @@ const bodyPartsData: BodyPart[] = [
   { id: 'right_ankle', name: 'Right Ankle', path: 'M 90 515 L 60 510 L 58 540 L 88 545 Z', side: 'front' },
   { id: 'left_foot', name: 'Left Foot', path: 'M 112 545 L 142 540 L 150 570 L 110 570 Z', side: 'front' },
   { id: 'right_foot', name: 'Right Foot', path: 'M 88 545 L 58 540 L 50 570 L 90 570 Z', side: 'front' },
-  
+
   // Back body - using offset of 220
   { id: 'back_head', name: 'Back of Head', path: 'M 320 30 C 300 30, 290 50, 290 70 C 290 90, 305 105, 320 105 C 335 105, 350 90, 350 70 C 350 50, 340 30, 320 30 Z', side: 'back' },
   { id: 'back_neck', name: 'Back of Neck', path: 'M 310 105 L 310 125 L 330 125 L 330 105 Z', side: 'back' },
@@ -68,13 +67,13 @@ interface BodyMapProps {
   selectedParts: string[];
 }
 
-export const BodyMap: React.FC<BodyMapProps> = ({ onBodyPartSelect, selectedParts }) => {
+const BodyMap: React.FC<BodyMapProps> = ({ onBodyPartSelect, selectedParts }) => {
   const [hoveredPart, setHoveredPart] = useState<string | null>(null);
 
   const getPartStyle = (partId: string) => {
     const isSelected = selectedParts.includes(partId);
     const isHovered = hoveredPart === partId;
-    
+
     if (isSelected) {
       return {
         fill: 'hsl(var(--accent) / 0.6)',
@@ -115,10 +114,10 @@ export const BodyMap: React.FC<BodyMapProps> = ({ onBodyPartSelect, selectedPart
               <stop offset="100%" stopColor="hsl(var(--muted))" />
             </linearGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="4" result="coloredBlur" />
               <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
@@ -204,6 +203,4 @@ export const BodyMap: React.FC<BodyMapProps> = ({ onBodyPartSelect, selectedPart
       )}
     </div>
   );
-};
-
-export default BodyMap;
+};;

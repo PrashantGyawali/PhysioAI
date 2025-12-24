@@ -79,7 +79,6 @@ export const ChatBot: React.FC<ChatBotProps> = ({ selectedBodyPart, onAssessment
       const partName = selectedBodyPart.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       setAssessment({ bodyPart: partName });
       
-      // Initial greeting
       setIsTyping(true);
       setTimeout(() => {
         setMessages([
