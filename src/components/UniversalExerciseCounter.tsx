@@ -40,6 +40,8 @@ const UniversalExerciseCounter: React.FC = () => {
     const activeSideRef = useRef<'left' | 'right'>('left');
     const feedbackRef = useRef<string | null>(null);
     const autoSwitchScheduledRef = useRef(false);
+    const lastSpokenRef = useRef<string | null>(null);
+    const speechTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         activeSideRef.current = activeSide;
@@ -48,11 +50,13 @@ const UniversalExerciseCounter: React.FC = () => {
         setStats({ count: 0, timer: 0 });
         stageRef.current = null;
         lastTimeRef.current = 0;
-        lastTimeRef.current = 0;
         feedbackRef.current = null;
         setFeedback(null);
-        autoSwitchScheduledRef.current = false; // Reset the checking flag
-        // Clear collision of feedback if any
+        autoSwitchScheduledRef.current = false;
+        lastSpokenRef.current = null; // Reset TTS so messages can be spoken again
+        // Cancel any pending speech when switching sides
+        if (speechTimeoutRef.current) clearTimeout(speechTimeoutRef.current);
+        window.speechSynthesis?.cancel();
     }, [activeSide]);
 
     // Load Config
@@ -87,6 +91,9 @@ const UniversalExerciseCounter: React.FC = () => {
         return () => {
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
             if (poseLandmarkerRef.current) poseLandmarkerRef.current.close();
+            // Cancel any pending speech
+            if (speechTimeoutRef.current) clearTimeout(speechTimeoutRef.current);
+            window.speechSynthesis?.cancel();
         };
     }, []);
 
@@ -278,7 +285,31 @@ const UniversalExerciseCounter: React.FC = () => {
         // Sync State
         if (feedbackRef.current !== currentFeedback) {
             setFeedback(currentFeedback);
-            feedbackRef.current = currentFeedback; // using separate ref if needed or just relying on state in render
+            feedbackRef.current = currentFeedback;
+
+            // Text-to-Speech feedback
+            if (currentFeedback && currentFeedback !== lastSpokenRef.current) {
+                // Clear any pending speech timeout
+                if (speechTimeoutRef.current) {
+                    clearTimeout(speechTimeoutRef.current);
+                }
+
+                // Debounce speech to avoid rapid repetition
+                speechTimeoutRef.current = setTimeout(() => {
+                    if (window.speechSynthesis) {
+                        // Cancel any ongoing speech
+                        window.speechSynthesis.cancel();
+
+                        const utterance = new SpeechSynthesisUtterance(currentFeedback);
+                        utterance.rate = 1.0;
+                        utterance.pitch = 1.0;
+                        utterance.volume = 1.0;
+
+                        window.speechSynthesis.speak(utterance);
+                        lastSpokenRef.current = currentFeedback;
+                    }
+                }, 500); // 500ms debounce
+            }
         }
 
         setStats(prev => {
