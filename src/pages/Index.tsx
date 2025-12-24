@@ -33,8 +33,21 @@ const Index = () => {
 
   const handleAssessmentComplete = (data: AssessmentData) => {
     setAssessment(data);
-    const exercises = getExercisesForBodyPart(selectedBodyPart || '');
-    setRecommendedExercises(exercises);
+    // Get exercises for ALL selected body parts and deduplicate by ID
+    const allExercises: Exercise[] = [];
+    const seenIds = new Set<string>();
+
+    selectedBodyParts.forEach(part => {
+      const exercises = getExercisesForBodyPart(part);
+      exercises.forEach(exercise => {
+        if (!seenIds.has(exercise.id)) {
+          seenIds.add(exercise.id);
+          allExercises.push(exercise);
+        }
+      });
+    });
+
+    setRecommendedExercises(allExercises);
     setTimeout(() => setCurrentStep('exercises'), 1500);
   };
 

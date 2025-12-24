@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import imageMapResize from "image-map-resizer";
 import { bodyParts } from "@/utils/body-parts";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, CheckCircle } from "lucide-react";
 
 interface BodyPart {
     id: string;
@@ -76,13 +78,13 @@ export function BodyMap({ onBodyPartSelect }) {
     };
 
     return (
-        <div className="mx-auto w-fit relative">
+        <div className="mx-auto w-fit relative flex flex-col items-center gap-6">
             <img
                 ref={imgRef}
                 src="body-selector.jpg"
                 alt="Body Map"
                 useMap="#image-map"
-                className="h-auto max-h-[90vh] block"
+                className="h-auto max-h-[75vh] block rounded-2xl shadow-card"
                 onLoad={drawHighlights}
             />
 
@@ -107,7 +109,39 @@ export function BodyMap({ onBodyPartSelect }) {
                     />
                 ))}
             </map>
-            <button onClick={() => onBodyPartSelect(parts)}>done</button>
+
+            {/* Selected parts indicator */}
+            {parts.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center max-w-md">
+                    {parts.map(part => (
+                        <span
+                            key={part.id}
+                            className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1"
+                        >
+                            <CheckCircle className="w-3 h-3" />
+                            {part.title.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </span>
+                    ))}
+                </div>
+            )}
+
+            {/* Themed Done Button */}
+            <Button
+                variant="hero"
+                size="lg"
+                onClick={() => onBodyPartSelect(parts)}
+                disabled={parts.length === 0}
+                className="min-w-[200px]"
+            >
+                {parts.length === 0 ? (
+                    "Select Body Parts"
+                ) : (
+                    <>
+                        Continue with {parts.length} {parts.length === 1 ? 'Area' : 'Areas'}
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                    </>
+                )}
+            </Button>
         </div>
     );
 }
