@@ -11,6 +11,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Neck',
       youtubeId: '2N1Nh7M8kpY',
+      thumbnail: '/neck-stretch-1-thumbnail.png',
       instructions: [
         'Sit or stand with good posture, shoulders relaxed',
         'Slowly tilt your head to the left, bringing ear toward shoulder',
@@ -56,6 +57,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Shoulder',
       youtubeId: 'E4KVt0bfpuk',
+      thumbnail: '/shoulder-pendulum-thumbnail.png',
       instructions: [
         'Lean forward with one hand on a table for support',
         'Let your affected arm hang down loosely',
@@ -77,6 +79,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Shoulder',
       youtubeId: 'Hf9XCH4RwIk',
+      thumbnail: '/shoulder-stretch-thumbnail.png',
       instructions: [
         'Stand or sit with good posture',
         'Bring your left arm across your body',
@@ -100,6 +103,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Shoulder',
       youtubeId: 'E4KVt0bfpuk',
+      thumbnail: '/shoulder-pendulum-thumbnail.png',
       instructions: [
         'Lean forward with one hand on a table for support',
         'Let your affected arm hang down loosely',
@@ -125,6 +129,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Knee',
       youtubeId: 'YWiyPRvz9-c',
+      thumbnail: '/knee-extension-thumbnail.png',
       instructions: [
         'Sit in a chair with feet flat on the floor',
         'Slowly straighten one leg, raising foot',
@@ -148,6 +153,7 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
       difficulty: 'Easy',
       targetArea: 'Knee',
       youtubeId: 'YWiyPRvz9-c',
+      thumbnail: '/knee-extension-thumbnail.png',
       instructions: [
         'Sit in a chair with feet flat on the floor',
         'Slowly straighten one leg, raising foot',

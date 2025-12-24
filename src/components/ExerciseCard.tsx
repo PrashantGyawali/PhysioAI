@@ -11,6 +11,7 @@ export interface Exercise {
   difficulty: 'Easy' | 'Medium' | 'Hard';
   targetArea: string;
   youtubeId: string;
+  thumbnail?: string; // Optional custom thumbnail path (relative to public folder)
   instructions: string[];
   benefits: string[];
 }
@@ -37,11 +38,16 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onStartExe
       {/* Thumbnail */}
       <div className="relative aspect-video bg-secondary overflow-hidden">
         <img
-          src={`https://img.youtube.com/vi/${exercise.youtubeId}/maxresdefault.jpg`}
+          src={exercise.thumbnail || `https://img.youtube.com/vi/${exercise.youtubeId}/maxresdefault.jpg`}
           alt={exercise.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
-            e.currentTarget.src = `https://img.youtube.com/vi/${exercise.youtubeId}/hqdefault.jpg`;
+            // Fallback to YouTube thumbnail if custom thumbnail fails
+            if (!e.currentTarget.src.includes('youtube.com')) {
+              e.currentTarget.src = `https://img.youtube.com/vi/${exercise.youtubeId}/maxresdefault.jpg`;
+            } else if (e.currentTarget.src.includes('maxresdefault')) {
+              e.currentTarget.src = `https://img.youtube.com/vi/${exercise.youtubeId}/hqdefault.jpg`;
+            }
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
@@ -59,7 +65,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onStartExe
             <span className="text-sm font-medium">{exercise.duration}</span>
           </div>
         </div>
-        
+
         {/* Play button overlay */}
         <button
           onClick={() => onStartExercise(exercise)}
@@ -82,7 +88,7 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onStartExe
             {exercise.targetArea}
           </span>
         </div>
-        
+
         <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
           {exercise.description}
         </p>
@@ -120,9 +126,9 @@ export const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onStartExe
 
         {/* Actions */}
         <div className="flex items-center gap-3 mt-4">
-          <Button 
-            onClick={() => onStartExercise(exercise)} 
-            variant="hero" 
+          <Button
+            onClick={() => onStartExercise(exercise)}
+            variant="hero"
             className="flex-1"
           >
             <Camera className="w-4 h-4 mr-2" />
