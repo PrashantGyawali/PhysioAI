@@ -29,6 +29,7 @@ const UniversalExerciseCounter: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
     const [feedback, setFeedback] = useState<string | null>(null);
     const [activeSide, setActiveSide] = useState<'left' | 'right'>('left'); // Default to left
+    const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
 
     // Refs for Loop
     const statsRef = useRef({ count: 0, timer: 0 });
@@ -297,8 +298,8 @@ const UniversalExerciseCounter: React.FC = () => {
     }, [loaded]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-950 text-white p-4">
-            <div className="w-full max-w-7xl mb-4 flex items-center justify-between">
+        <div className="flex flex-col items-center bg-neutral-950 text-white p-2 min-h-screen">
+            <div className="w-full max-w-7xl mb-2 flex items-center justify-between">
                 <Button variant="ghost" className="text-white hover:text-emerald-400" onClick={() => navigate('/')}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
                 </Button>
@@ -326,9 +327,9 @@ const UniversalExerciseCounter: React.FC = () => {
                 <div className="w-[100px]"></div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl">
+            <div className="flex flex-col lg:flex-row gap-4 w-full max-w-6xl" style={{ maxHeight: 'calc(100vh - 100px)' }}>
                 {/* Left Panel: Camera */}
-                <div className="flex-1 relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/50 aspect-video">
+                <div className="flex-1 relative rounded-xl overflow-hidden shadow-2xl border border-white/10 bg-black/50" style={{ maxHeight: '80vh', aspectRatio: '4/3' }}>
                     <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline></video>
                     <canvas ref={canvasRef} width="640" height="480" className="absolute inset-0 w-full h-full object-cover"></canvas>
 
@@ -364,8 +365,8 @@ const UniversalExerciseCounter: React.FC = () => {
                 </div>
 
                 {/* Right Panel: Instructions */}
-                <div className="w-full lg:w-80 flex flex-col gap-4">
-                    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex-1">
+                <div className="w-full lg:w-72 flex flex-col gap-2 overflow-hidden" style={{ maxHeight: '80vh' }}>
+                    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4 flex-1 overflow-y-auto">
                         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                             <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                             Instructions
@@ -381,12 +382,37 @@ const UniversalExerciseCounter: React.FC = () => {
                                     </p>
                                 </div>
                             ))}
-                            <div className="mt-6 pt-6 border-t border-white/10">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tips</h4>
-                                <p className="text-sm text-gray-400 italic">
-                                    "{config.instruction}"
-                                </p>
-                            </div>
+
+                            {/* Exercise Demo GIF */}
+                            {id && (
+                                <div className="mt-6 pt-6 border-t border-white/10">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Demo</h4>
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={() => setSelectedGender('male')}
+                                                className={`px-2 py-1 text-xs rounded ${selectedGender === 'male' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
+                                            >
+                                                Male
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedGender('female')}
+                                                className={`px-2 py-1 text-xs rounded ${selectedGender === 'female' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
+                                            >
+                                                Female
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <img
+                                        src={`/${id}-${selectedGender}.gif`}
+                                        alt={`${exerciseDetails?.name} demo`}
+                                        className="rounded-lg border border-white/10 h-[175px] mx-auto"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none';
+                                        }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

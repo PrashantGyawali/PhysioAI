@@ -116,98 +116,8 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
     }
   ],
 
-  // Back exercises
-  upper_back: [
-    {
-      id: 'cat-cow',
-      name: 'Cat-Cow Stretch',
-      description: 'Classic yoga movement for spinal mobility and back pain relief.',
-      duration: '5 min',
-      difficulty: 'Easy',
-      targetArea: 'Upper Back',
-      youtubeId: 'kqnua4rHVVA',
-      instructions: [
-        'Start on hands and knees in tabletop position',
-        'Inhale and arch your back, lifting head and tailbone (Cow)',
-        'Exhale and round your spine, tucking chin and tailbone (Cat)',
-        'Move slowly and smoothly between positions',
-        'Repeat for 10-15 cycles'
-      ],
-      benefits: [
-        'Improves spinal flexibility',
-        'Releases back tension',
-        'Promotes healthy posture'
-      ]
-    },
-    {
-      id: 'thoracic-rotation',
-      name: 'Thoracic Spine Rotation',
-      description: 'Rotation exercise to improve mid-back mobility.',
-      duration: '6 min',
-      difficulty: 'Medium',
-      targetArea: 'Upper Back',
-      youtubeId: 'RcMxZM0bPME',
-      instructions: [
-        'Start on all fours with hands under shoulders',
-        'Place one hand behind your head',
-        'Rotate your upper body, bringing elbow toward ceiling',
-        'Return to start and repeat',
-        'Do 10 reps on each side'
-      ],
-      benefits: [
-        'Increases thoracic mobility',
-        'Reduces upper back stiffness',
-        'Helps with breathing capacity'
-      ]
-    }
-  ],
-  spine: [
-    {
-      id: 'child-pose',
-      name: 'Child\'s Pose',
-      description: 'Restorative pose for gentle spinal decompression.',
-      duration: '3 min',
-      difficulty: 'Easy',
-      targetArea: 'Spine',
-      youtubeId: 'eqVMAPM00DM',
-      instructions: [
-        'Kneel on the floor with toes together',
-        'Sit back on your heels',
-        'Fold forward, extending arms in front or alongside body',
-        'Rest forehead on the floor',
-        'Hold for 30 seconds to 2 minutes'
-      ],
-      benefits: [
-        'Gently stretches the spine',
-        'Relieves back and neck tension',
-        'Promotes relaxation'
-      ]
-    }
-  ],
-
   // Knee exercises
   left_knee: [
-    {
-      id: 'quad-stretch',
-      name: 'Standing Quad Stretch',
-      description: 'Stretch for the quadriceps to support knee health.',
-      duration: '4 min',
-      difficulty: 'Easy',
-      targetArea: 'Knee',
-      youtubeId: 'YR7NBEGYeaQ',
-      instructions: [
-        'Stand near a wall for balance support',
-        'Bend one knee and bring heel toward buttocks',
-        'Hold your ankle with your hand',
-        'Keep knees together and hips forward',
-        'Hold for 30 seconds, repeat on other side'
-      ],
-      benefits: [
-        'Stretches quadriceps muscles',
-        'Reduces knee stiffness',
-        'Improves flexibility'
-      ]
-    },
     {
       id: 'knee-extension',
       name: 'Seated Knee Extension',
@@ -232,77 +142,31 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
   ],
   right_knee: [
     {
-      id: 'quad-stretch',
-      name: 'Standing Quad Stretch',
-      description: 'Stretch for the quadriceps to support knee health.',
-      duration: '4 min',
-      difficulty: 'Easy',
-      targetArea: 'Knee',
-      youtubeId: 'YR7NBEGYeaQ',
-      instructions: [
-        'Stand near a wall for balance support',
-        'Bend one knee and bring heel toward buttocks',
-        'Hold your ankle with your hand',
-        'Keep knees together and hips forward',
-        'Hold for 30 seconds, repeat on other side'
-      ],
-      benefits: [
-        'Stretches quadriceps muscles',
-        'Reduces knee stiffness',
-        'Improves flexibility'
-      ]
-    }
-  ],
-
-  // Lower back exercises
-  buttocks: [
-    {
-      id: 'piriformis-stretch',
-      name: 'Piriformis Stretch',
-      description: 'Targeted stretch for the deep hip muscles that can affect the lower back.',
+      id: 'knee-extension',
+      name: 'Seated Knee Extension',
+      description: 'Strengthening exercise for the muscles around the knee.',
       duration: '5 min',
       difficulty: 'Easy',
-      targetArea: 'Hips/Lower Back',
-      youtubeId: 'nOufZDZs9hY',
+      targetArea: 'Knee',
+      youtubeId: 'YWiyPRvz9-c',
       instructions: [
-        'Lie on your back with knees bent',
-        'Cross one ankle over the opposite knee',
-        'Pull the uncrossed leg toward your chest',
-        'Feel the stretch in your hip and buttock',
-        'Hold for 30 seconds, repeat on other side'
+        'Sit in a chair with feet flat on the floor',
+        'Slowly straighten one leg, raising foot',
+        'Hold at the top for 3 seconds',
+        'Lower slowly and repeat',
+        'Do 10-15 reps on each leg'
       ],
       benefits: [
-        'Relieves sciatic pain',
-        'Loosens tight hip muscles',
-        'Reduces lower back tension'
+        'Strengthens quadriceps',
+        'Supports knee stability',
+        'Safe for most knee conditions'
       ]
     }
   ],
 
-  // Chest exercises
-  chest: [
-    {
-      id: 'doorway-stretch',
-      name: 'Doorway Chest Stretch',
-      description: 'Effective stretch for opening up tight chest muscles.',
-      duration: '4 min',
-      difficulty: 'Easy',
-      targetArea: 'Chest',
-      youtubeId: 'SZb67eXHKqc',
-      instructions: [
-        'Stand in a doorway with arms at 90 degrees',
-        'Place forearms on door frame',
-        'Step forward with one foot',
-        'Lean forward until you feel a stretch in your chest',
-        'Hold for 30 seconds, repeat 3 times'
-      ],
-      benefits: [
-        'Opens tight chest muscles',
-        'Improves posture',
-        'Helps with rounded shoulders'
-      ]
-    }
-  ],
+  // Removed: buttocks and chest exercises (require floor/doorway - not detectable)
+  buttocks: [],
+  chest: [],
 
   // Default exercises for unmapped body parts
   default: [
@@ -335,7 +199,7 @@ export const getExercisesForBodyPart = (bodyPartId: string): Exercise[] => {
   if (exerciseDatabase[bodyPartId]) {
     return exerciseDatabase[bodyPartId];
   }
-  
+
   // Try partial matches
   const partialMatches: Record<string, string> = {
     'head': 'neck',
@@ -354,12 +218,32 @@ export const getExercisesForBodyPart = (bodyPartId: string): Exercise[] => {
     'left_shin': 'left_knee',
     'right_shin': 'right_knee',
   };
-  
+
   const mappedPart = partialMatches[bodyPartId];
   if (mappedPart && exerciseDatabase[mappedPart]) {
     return exerciseDatabase[mappedPart];
   }
-  
+
   // Return default exercises
   return exerciseDatabase.default;
+};
+
+// Get all unique available exercises (filtering out empty categories)
+export const getAllAvailableExercises = (): Exercise[] => {
+  const allExercises: Exercise[] = [];
+  const seenIds = new Set<string>();
+
+  for (const category in exerciseDatabase) {
+    if (category === 'default') continue; // Skip default
+
+    const exercises = exerciseDatabase[category];
+    for (const exercise of exercises) {
+      if (!seenIds.has(exercise.id)) {
+        seenIds.add(exercise.id);
+        allExercises.push(exercise);
+      }
+    }
+  }
+
+  return allExercises;
 };
