@@ -14,54 +14,73 @@ const generateFallbackRecommendations = (
 ): string[] => {
     console.log("Generating fallback recommendations for:", assessment);
 
-    // 1. Filter by Pain Severity
-    let suitableExercises = exercises;
-    const severity = assessment.painSeverity; // "1-3 (Mild)", "7-10 (Severe)"
-
-    if (typeof severity === 'string' && severity.includes('7-10')) {
-        // Severe pain: Only Easy exercises
-        suitableExercises = suitableExercises.filter(ex => ex.difficulty === 'Easy');
-    } else if (typeof severity === 'string' && severity.includes('4-6')) {
-        // Moderate pain: Easy and Medium
-        suitableExercises = suitableExercises.filter(ex => ex.difficulty !== 'Hard');
-    }
-
-    // 2. Filter by Age (Safety check)
-    if (assessment.age === 'Over 60') {
-        // Avoid Hard exercises for seniors in fallback mode
-        suitableExercises = suitableExercises.filter(ex => ex.difficulty !== 'Hard');
-    }
-
-    // 3. Match by Pain Type (Simple keyword matching)
-    const painType = assessment.painType; // "Stiffness", "Sharp"
-    if (painType === 'Stiffness') {
-        // Prioritize exercises with "stretch" or "rotation" in name/description
-        const mobilityExercises = suitableExercises.filter(ex =>
-            ex.name.toLowerCase().includes('stretch') ||
-            ex.name.toLowerCase().includes('rotation') ||
-            ex.description.toLowerCase().includes('mobility')
-        );
-        if (mobilityExercises.length > 0) {
-            // Boost these to the top, but keep others as backup
-            const otherExercises = suitableExercises.filter(ex => !mobilityExercises.includes(ex));
-            suitableExercises = [...mobilityExercises, ...otherExercises];
+    // Group exercises by targetArea to ensure coverage
+    const exercisesByArea: Record<string, Exercise[]> = {};
+    exercises.forEach(ex => {
+        const area = ex.targetArea;
+        if (!exercisesByArea[area]) {
+            exercisesByArea[area] = [];
         }
-    }
+        exercisesByArea[area].push(ex);
+    });
 
-    // 4. Select Breakdown
-    // We want 3-4 exercises.
-    // If we have "Severe" pain, maybe just 2-3 gentle ones.
-    const count = severity?.includes('7-10') ? 3 : 4;
+    const selectedIds: string[] = [];
+    const severity = assessment.painSeverity; // "1-3 (Mild)", "7-10 (Severe)"
+    const age = assessment.age;
+    const painType = assessment.painType;
 
-    // Shuffle slightly to give variety if run multiple times (optional, but nice)
-    // For now, just slice the top matching ones
-    const selectedIds = suitableExercises.slice(0, count).map(ex => ex.id);
+    // Process each area
+    Object.keys(exercisesByArea).forEach(area => {
+        let areaExercises = exercisesByArea[area];
 
-    // Ensure we return something
-    if (selectedIds.length === 0) {
-        // Ultimate fallback: just take the first 3 easy ones
-        return exercises.filter(ex => ex.difficulty === 'Easy').slice(0, 3).map(ex => ex.id);
-    }
+        // 1. Filter by Pain Severity
+        if (typeof severity === 'string' && severity.includes('7-10')) {
+            // Severe pain: Only Easy exercises
+            areaExercises = areaExercises.filter(ex => ex.difficulty === 'Easy');
+        } else if (typeof severity === 'string' && severity.includes('4-6')) {
+            // Moderate pain: Easy and Medium
+            areaExercises = areaExercises.filter(ex => ex.difficulty !== 'Hard');
+        }
+
+        // 2. Filter by Age (Safety check)
+        if (age === 'Over 60') {
+            // Avoid Hard exercises for seniors in fallback mode
+            areaExercises = areaExercises.filter(ex => ex.difficulty !== 'Hard');
+        }
+
+        // 3. Match by Pain Type (Simple keyword matching)
+        if (painType === 'Stiffness') {
+            // Prioritize exercises with "stretch" or "rotation" in name/description
+            const mobilityExercises = areaExercises.filter(ex =>
+                ex.name.toLowerCase().includes('stretch') ||
+                ex.name.toLowerCase().includes('rotation') ||
+                ex.description.toLowerCase().includes('mobility')
+            );
+            if (mobilityExercises.length > 0) {
+                // Boost these to the top, but keep others as backup
+                const otherExercises = areaExercises.filter(ex => !mobilityExercises.includes(ex));
+                areaExercises = [...mobilityExercises, ...otherExercises];
+            }
+        }
+
+        // 4. Select Breakdown
+        // Select 2-3 exercises per body part to ensure coverage
+        const count = severity?.includes('7-10') ? 2 : 3;
+
+        // Take top exercises for this area
+        const areaSelectedIds = areaExercises.slice(0, count).map(ex => ex.id);
+
+        // If we filtered too much and have nothing, fallback to just any easy ones for this area
+        if (areaSelectedIds.length === 0) {
+            const fallbackIds = exercisesByArea[area]
+                .filter(ex => ex.difficulty === 'Easy')
+                .slice(0, 2)
+                .map(ex => ex.id);
+            selectedIds.push(...fallbackIds);
+        } else {
+            selectedIds.push(...areaSelectedIds);
+        }
+    });
 
     return selectedIds;
 };
@@ -97,11 +116,16 @@ export const getPersonalizedRecommendations = async (
         // 3. Construct Prompt
         const prompt = `
       Act as an expert Physical Therapist. 
-      Select the best 3-4 exercises for this patient from the provided list.
+      Select the best exercises for this patient from the provided list.
       
       PATIENT: ${patientContext}
       
       EXERCISES: ${knowledgeBaseString}
+
+      CRITICAL INSTRUCTION:
+      You MUST select at least 2 exercises for EACH unique targetArea present in the EXERCISES list.
+      Do not ignore any body part. If the user has pain in multiple areas, provide exercises for ALL of them.
+      Total exercises should be between 3 and 8, depending on how many body parts are involved.
 
       RULES:
       1. severe_pain (7-10): ONLY 'Easy' exercises. No 'Medium'/'Hard'.

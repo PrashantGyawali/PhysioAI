@@ -18,6 +18,7 @@ export const ExercisePlayer: React.FC<ExercisePlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [selectedGender, setSelectedGender] = useState<'male' | 'female'>('male');
 
   return (
     <div className="fixed inset-0 z-50 bg-foreground/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
@@ -52,7 +53,7 @@ export const ExercisePlayer: React.FC<ExercisePlayerProps> = ({
                 allowFullScreen
               />
             </div>
-            
+
             {/* Video Controls */}
             <div className="flex items-center justify-center gap-3">
               <Button
@@ -129,6 +130,47 @@ export const ExercisePlayer: React.FC<ExercisePlayerProps> = ({
                 ))}
               </ul>
             </div>
+
+            {/* Exercise Demo GIF */}
+            {(exercise.gifMale || exercise.gifFemale) && (
+              <div className="p-4 bg-secondary rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium text-foreground">Exercise Demo</h4>
+                  <div className="flex gap-1">
+                    {exercise.gifMale && (
+                      <Button
+                        variant={selectedGender === 'male' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setSelectedGender('male')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        Male
+                      </Button>
+                    )}
+                    {exercise.gifFemale && (
+                      <Button
+                        variant={selectedGender === 'female' ? 'default' : 'ghost'}
+                        size="sm"
+                        onClick={() => setSelectedGender('female')}
+                        className="h-8 px-3 text-xs"
+                      >
+                        Female
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                <div className="rounded-xl overflow-hidden bg-background border border-border">
+                  <img
+                    src={selectedGender === 'male' ? exercise.gifMale : exercise.gifFemale}
+                    alt={`${exercise.name} demonstration`}
+                    className="w-full h-auto"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* AI Motion Detection CTA */}
             <Button

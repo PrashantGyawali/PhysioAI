@@ -12,6 +12,8 @@ export interface Exercise {
   targetArea: string;
   youtubeId: string;
   thumbnail?: string; // Optional custom thumbnail path (relative to public folder)
+  gifMale?: string; // Optional GIF for male demonstration
+  gifFemale?: string; // Optional GIF for female demonstration
   instructions: string[];
   benefits: string[];
 }

@@ -683,28 +683,32 @@ const UniversalExerciseCounter: React.FC = () => {
                             ))}
 
                             {/* Exercise Demo GIF */}
-                            {id && (
+                            {exerciseDetails && (exerciseDetails.gifMale || exerciseDetails.gifFemale) && (
                                 <div className="mt-6 pt-6 border-t border-white/10">
                                     <div className="flex items-center justify-between mb-3">
                                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Demo</h4>
                                         <div className="flex gap-1">
-                                            <button
-                                                onClick={() => setSelectedGender('male')}
-                                                className={`px-2 py-1 text-xs rounded ${selectedGender === 'male' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
-                                            >
-                                                Male
-                                            </button>
-                                            <button
-                                                onClick={() => setSelectedGender('female')}
-                                                className={`px-2 py-1 text-xs rounded ${selectedGender === 'female' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
-                                            >
-                                                Female
-                                            </button>
+                                            {exerciseDetails.gifMale && (
+                                                <button
+                                                    onClick={() => setSelectedGender('male')}
+                                                    className={`px-2 py-1 text-xs rounded ${selectedGender === 'male' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
+                                                >
+                                                    Male
+                                                </button>
+                                            )}
+                                            {exerciseDetails.gifFemale && (
+                                                <button
+                                                    onClick={() => setSelectedGender('female')}
+                                                    className={`px-2 py-1 text-xs rounded ${selectedGender === 'female' ? 'bg-emerald-500 text-white' : 'bg-white/10 text-gray-400 hover:bg-white/20'}`}
+                                                >
+                                                    Female
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     <img
-                                        src={`/${id}-${selectedGender}.gif`}
-                                        alt={`${exerciseDetails?.name} demo`}
+                                        src={selectedGender === 'male' ? exerciseDetails.gifMale : exerciseDetails.gifFemale}
+                                        alt={`${exerciseDetails.name} demo`}
                                         className="rounded-lg border border-white/10 h-[175px] mx-auto"
                                         onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
