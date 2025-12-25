@@ -83,9 +83,13 @@ const Index = () => {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => { setCurrentStep('landing'); navigate('/'); }}>
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
+            {/* <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
               <Activity className="w-5 h-5 text-primary-foreground" />
-            </div>
+            </div> */}
+
+
+<img className='w-[70px]' src="/public/image.png" alt="" />
+
             <span className="font-display font-bold text-xl text-foreground">PhysioAI</span>
           </div>
 
