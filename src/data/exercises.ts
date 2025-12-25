@@ -115,28 +115,6 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
         'Improves overhead mobility'
       ]
     },
-    {
-      id: 'shoulder-abduction',
-      name: 'Active Shoulder Abduction',
-      description: 'Raises the arm to the side to strengthen the deltoid and improve mobility.',
-      duration: '4 min',
-      difficulty: 'Medium',
-      targetArea: 'Shoulder',
-      youtubeId: 'qk1aE1j_4no',
-      thumbnail: '/shoulder-abduction-thumbnail.png',
-      instructions: [
-        'Stand tall with arm at your side',
-        'Raise your arm out to the side',
-        'Keep palm facing forward or down',
-        'Lift to shoulder height if possible',
-        'Lower slowly with control'
-      ],
-      benefits: [
-        'Strengthens medial deltoid',
-        'Improves side-reaching ability',
-        'Enhances shoulder stability'
-      ]
-    }
   ],
   right_shoulder: [
     {
@@ -203,28 +181,6 @@ export const exerciseDatabase: Record<string, Exercise[]> = {
         'Increases forward reach',
         'Strengthens shoulder flexors',
         'Improves overhead mobility'
-      ]
-    },
-    {
-      id: 'shoulder-abduction',
-      name: 'Active Shoulder Abduction',
-      description: 'Raises the arm to the side to strengthen the deltoid and improve mobility.',
-      duration: '4 min',
-      difficulty: 'Medium',
-      targetArea: 'Shoulder',
-      youtubeId: 'qk1aE1j_4no',
-      thumbnail: '/shoulder-abduction-thumbnail.png',
-      instructions: [
-        'Stand tall with arm at your side',
-        'Raise your arm out to the side',
-        'Keep palm facing forward or down',
-        'Lift to shoulder height if possible',
-        'Lower slowly with control'
-      ],
-      benefits: [
-        'Strengthens medial deltoid',
-        'Improves side-reaching ability',
-        'Enhances shoulder stability'
       ]
     }
   ],
