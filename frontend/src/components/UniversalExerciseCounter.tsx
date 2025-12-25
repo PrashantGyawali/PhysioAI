@@ -238,7 +238,7 @@ const UniversalExerciseCounter: React.FC = () => {
 
 
 
-    const isVisible = (landmark: NormalizedLandmark) => (landmark.visibility ?? 1) > 0.6;
+    const isVisible = (landmark: NormalizedLandmark) => (landmark.visibility ?? 1) > 0.5;
 
     // Side Swapper Helper
     // If user selects "Right", we swap Left(11,13,15...) with Right(12,14,16...) landmarks logic?

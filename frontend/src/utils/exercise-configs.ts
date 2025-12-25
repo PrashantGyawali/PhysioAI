@@ -126,6 +126,123 @@ export const EXERCISE_CONFIGS: Record<string, ExerciseConfig> = {
         targetDuration: 5
     },
 
+    // --- Isometric Side Bending ---
+    'isometric-side-bend': {
+        id: 'isometric-side-bend',
+        type: 'DURATION',
+        instruction: 'Place hand on side of head. Push head into hand without moving.',
+        requiredLandmarks: [11, 12, 7, 8], // Shoulders and Ears (for head tracking)
+        connections: [
+            { start: 11, end: 12 },  // Shoulders
+            { start: 7, end: 8 },    // Head
+            { start: 11, end: 13 }, { start: 13, end: 15 } // Arm (for hand position)
+        ],
+        calculateMetric: (landmarks) => {
+            // Check distance between Active Hand (Wrist) and Active Ear
+            // We need to know if it's Left or Right side.
+            // The component handles landmarks relative to Active Side?
+            // "UniversalExerciseCounter" passes `virtualLandmarks` where [15] is ALWAYS the active wrist. [7] is active ear.
+
+            const ear = landmarks[7];
+            const wrist = landmarks[15];
+            const shoulder = landmarks[11];
+
+            // Calculate distance
+            const dist = Math.sqrt(Math.pow(wrist.x - ear.x, 2) + Math.pow(wrist.y - ear.y, 2));
+
+            // Normalize by shoulder width to be scale-invariant
+            const shoulderWidth = Math.abs(landmarks[11].x - landmarks[12].x);
+            if (shoulderWidth < 0.01) return 100; // invalid
+
+            const normalizedDist = dist / shoulderWidth;
+            return normalizedDist;
+        },
+        thresholds: {
+            min: 0,    // Hand touching head
+            max: 0.6   // Tolerant range (hand near head)
+        },
+        targetDuration: 10
+    },
+
+    // --- Upper Trapezius Stretch ---
+    'trapezius-stretch': {
+        id: 'trapezius-stretch',
+        type: 'DURATION',
+        instruction: 'Tilt head away from side. Pull gently with other hand.',
+        // Minimal Requirements: Shoulders only.
+        // We handle Head/Arm tracking softly in the metric calculation.
+        requiredLandmarks: [11, 12],
+        connections: [
+            { start: 11, end: 12 },
+            { start: 12, end: 14 }, { start: 14, end: 16 } // Draw Opposite Arm
+        ],
+        calculateMetric: (landmarks) => {
+            // Logic: Tilt head to Opposite Side (Right). Usage Opposite Hand (Right).
+            // Context: virtualLandmarks are normalized to Left Side Active.
+
+            // 1. Hand/Arm Detection (Opposite side)
+            // Ideally Wrist (16) is near Ear (8) or Head.
+            // Fallback: Elbow (14) is raised (above shoulder).
+            const wrist = landmarks[16];
+            const elbow = landmarks[14];
+            const ear = landmarks[8]; // Opposite Ear
+            const shoulderRy = landmarks[12].y;
+
+            let armInPosition = false;
+
+            // Check Wrist Proximity if visible
+            if ((wrist.visibility ?? 1) > 0.5 && (ear.visibility ?? 1) > 0.5) {
+                const dist = Math.sqrt(Math.pow(wrist.x - ear.x, 2) + Math.pow(wrist.y - ear.y, 2));
+                if (dist < 0.3) armInPosition = true;
+            }
+
+            // Fallback: Check if Elbow is raised (Y is smaller than shoulder Y)
+            // And Elbow is somewhat close to body center (not reached out far)
+            if (!armInPosition && (elbow.visibility ?? 1) > 0.5) {
+                // Elbow Y < Shoulder Y (remember Y increases downwards)
+                if (elbow.y < shoulderRy) armInPosition = true;
+            }
+
+            if (!armInPosition) return 0; // Arm not involved
+
+            // 2. Head Tilt Detection
+            // Preferred: Eye Angle (Left Eye 2, Right Eye 5)
+            const leftEye = landmarks[2];
+            const rightEye = landmarks[5];
+            const nose = landmarks[0];
+            const shoulderMidX = (landmarks[11].x + landmarks[12].x) / 2;
+            const shoulderWidth = Math.abs(landmarks[11].x - landmarks[12].x);
+
+            let angle = 0;
+
+            // Try Eye Angle
+            if ((leftEye.visibility ?? 1) > 0.6 && (rightEye.visibility ?? 1) > 0.6) {
+                const dx = rightEye.x - leftEye.x;
+                const dy = rightEye.y - leftEye.y;
+                if (Math.abs(dx) > 0.001 && dy > 0) { // dy > 0 means Right Eye is Lower (Tilt Right)
+                    angle = Math.abs(Math.atan(dy / dx) * 180 / Math.PI);
+                }
+            }
+
+            // Fallback: Nose Offset (Nose moves to Right of Center)
+            if (angle < 10 && (nose.visibility ?? 1) > 0.5 && shoulderWidth > 0.01) {
+                const offset = (nose.x - shoulderMidX) / shoulderWidth;
+                // Offset > 0 means Nose is to the Right
+                if (offset > 0.1) {
+                    // Approximate angle from offset (0.1 offset ~ 15 degrees)
+                    angle = offset * 100; // Fake scale mapping
+                }
+            }
+
+            return angle;
+        },
+        thresholds: {
+            min: 15, // At least 15 deg tilt (or equivalent offset score)
+            max: 90
+        },
+        targetDuration: 30
+    },
+
     // --- Neck Rotation ---
     'neck-rotation': {
         id: 'neck-rotation',
