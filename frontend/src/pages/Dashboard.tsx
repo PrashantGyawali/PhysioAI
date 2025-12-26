@@ -39,7 +39,7 @@ import api from '@/lib/axios';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [stats, setStats] = useState<UserStats | null>(null);
     const [badges, setBadges] = useState<Badge[]>([]);
     const [weeklyData, setWeeklyData] = useState<{ day: string; sessions: number; reps: number }[]>([]);
@@ -72,6 +72,7 @@ const Dashboard: React.FC = () => {
         setGettingPro(true);
         try {
             await api.post('/auth/subscribe/pro')
+            window.location.reload();
         } catch (error) {
             console.error('Failed to get Pro subscription:', error);
         } finally {
@@ -79,7 +80,7 @@ const Dashboard: React.FC = () => {
         }
     }
 
-    if (!stats) {
+    if (!stats || authLoading) {
         return (
             <div className="min-h-screen gradient-hero flex items-center justify-center">
                 <div className="animate-pulse text-primary">Loading...</div>
@@ -106,7 +107,12 @@ const Dashboard: React.FC = () => {
                         </div>
                         <div className="flex flex-col gap-3">
                             <Button size="lg" className="w-full bg-primary hover:bg-primary/90" asChild>
-                                <button onClick={getPro}>Upgrade to Pro</button>
+                                <button onClick={getPro}>
+                                    {gettingPro ? (<>
+                                        <Download className="w-4 h-4 mr-2 animate-spin" />
+                                        Upgrading...
+                                    </>) : ('Upgrade to Pro for $9.99')}
+                                </button>
                             </Button>
                             <Button variant="ghost" asChild>
                                 <Link to="/">Return Home</Link>
