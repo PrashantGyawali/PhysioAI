@@ -198,13 +198,16 @@ const BicepCurlCounter: React.FC = () => {
                     if (shoulder && elbow && wrist) {
                         const angle = calculateAngle(shoulder, elbow, wrist);
 
-                        // Visualize Angle
+                        // Visualize Angle (flip text to counter CSS scaleX(-1))
+                        const textX = elbow.x * canvasRef.current.width;
+                        const textY = elbow.y * canvasRef.current.height;
+                        canvasCtx.save();
+                        canvasCtx.translate(textX, textY);
+                        canvasCtx.scale(-1, 1); // Counter the CSS flip
                         canvasCtx.font = "30px Arial";
                         canvasCtx.fillStyle = "white";
-                        canvasCtx.fillText(Math.round(angle).toString(),
-                            elbow.x * canvasRef.current.width,
-                            elbow.y * canvasRef.current.height
-                        );
+                        canvasCtx.fillText(Math.round(angle).toString() + "°", 0, 0);
+                        canvasCtx.restore();
 
                         // Counting Logic
                         if (angle > 160) {
