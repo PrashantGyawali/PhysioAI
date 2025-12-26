@@ -421,10 +421,16 @@ const UniversalExerciseCounter: React.FC = () => {
                     formQuality = Math.round(Math.max(60, Math.min(100, visibilityScore + positionScore + smoothnessScore)));
                     setLiveFormScore(formQuality);
 
-                    // Display Metric
+                    // Display Metric (flip text to counter CSS scaleX(-1))
+                    const textX = 50;
+                    const textY = 50;
+                    canvasCtx.save();
+                    canvasCtx.translate(textX, textY);
+                    canvasCtx.scale(-1, 1); // Counter the CSS flip
                     canvasCtx.font = "30px Arial";
                     canvasCtx.fillStyle = "white";
-                    canvasCtx.fillText(Math.round(val).toString(), 50, 50);
+                    canvasCtx.fillText(Math.round(val).toString() + "°", 0, 0);
+                    canvasCtx.restore();
 
                     // Logic
                     const now = Date.now();

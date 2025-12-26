@@ -7,6 +7,12 @@ An AI-powered physical therapy platform that provides personalized exercise reco
 [![Express](https://img.shields.io/badge/Express-5.1-000000?style=flat-square&logo=express)](https://expressjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
 
+## 🚀 Live Demo
+
+**[https://physio-ai-backend.vercel.app/](https://physio-ai-backend.vercel.app/)**
+
+Both frontend and backend are hosted on Vercel.
+
 ---
 
 ## Overview
